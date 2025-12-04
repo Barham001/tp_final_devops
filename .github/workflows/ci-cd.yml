@@ -45,8 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Deploy to Coolify
-        run: |
-          curl -X POST "${{ https://coolify.niceapp.cloud/onboarding?selectedServerType=&selectedExistingPrivateKey=&privateKeyType=&selectedExistingServer=&selectedProject=&step=select-server-type }}" \
-            -H "Content-Type: application/json" \
-            -d '{"branch": "main"}'
+      # - name: Deploy to Coolify
+      #   run: |
+      #     curl -X POST "${{ https://coolify.niceapp.cloud/onboarding?selectedServerType=&selectedExistingPrivateKey=&privateKeyType=&selectedExistingServer=&selectedProject=&step=select-server-type }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d '{"branch": "main"}'
