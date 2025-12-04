@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, feature/ci_cd ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+      
+      - name: Build images for scanning
+        run: |
+          docker build -f frontend/Dockerfile -t frontend:latest ./frontend
+          
+          docker build -f backend/Dockerfile -t backend:latest ./backend
+          
+          docker images
+      
+      - name: Run Trivy vulnerability scanner - Frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'frontend:latest'
+          format: 'table'
+          exit-code: '0'
+      
+      - name: Run Trivy vulnerability scanner - Backend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'backend:latest'
+          format: 'table'
+          exit-code: '0'
+
+  deploy:
+    needs: security-checks
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && success()
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Coolify (placeholder)
+        run: |
+          echo "Deploy step - waiting for Coolify webhook URL"
+          echo "Would deploy to: main branch"
