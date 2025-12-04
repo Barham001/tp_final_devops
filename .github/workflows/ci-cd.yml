@@ -2,6 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
+    branches: [ main, develop, feature/ci_cd ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   security-checks:
@@ -21,32 +24,34 @@ jobs:
       
       - name: Build images for scanning
         run: |
-          docker build -f Front_Dockerfile -t frontend:latest .
-          docker build -f Back_dockerfile -t backend:latest .
+          docker build -f frontend/Dockerfile -t frontend:latest ./frontend
+          
+          docker build -f backend/Dockerfile -t backend:latest ./backend
+          
+          docker images
       
       - name: Run Trivy vulnerability scanner - Frontend
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'frontend:latest'
-          format: 'sarif'
-          output: 'trivy-frontend-results.sarif'
+          format: 'table'
+          exit-code: '0'
       
       - name: Run Trivy vulnerability scanner - Backend
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'backend:latest'
-          format: 'sarif'
-          output: 'trivy-backend-results.sarif'
+          format: 'table'
+          exit-code: '0'
 
   deploy:
     needs: security-checks
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && success()
     steps:
       - uses: actions/checkout@v4
       
-      # - name: Deploy to Coolify
-      #   run: |
-      #     curl -X POST "${{ https://coolify.niceapp.cloud/onboarding?selectedServerType=&selectedExistingPrivateKey=&privateKeyType=&selectedExistingServer=&selectedProject=&step=select-server-type }}" \
-      #       -H "Content-Type: application/json" \
-      #       -d '{"branch": "main"}'
+      - name: Deploy to Coolify (placeholder)
+        run: |
+          echo "Deploy step - waiting for Coolify webhook URL"
+          echo "Would deploy to: main branch"
