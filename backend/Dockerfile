@@ -5,11 +5,11 @@ RUN go mod download
 
 COPY . .
 
-commiRUN go build -o main .
+RUN go build -o main .
 
 FROM alpine:latest
 
-
+ 
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
