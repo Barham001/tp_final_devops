@@ -2,9 +2,6 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   security-checks:
@@ -50,6 +47,6 @@ jobs:
       
       - name: Deploy to Coolify
         run: |
-          curl -X POST "${{ secrets.COOLIFY_WEBHOOK_URL }}" \
+          curl -X POST "${{ https://coolify.niceapp.cloud/auth/link?token=eyJpdiI6Ii9JbmNiUDk5ZzVUaUxWbUY4Y3M1aHc9PSIsInZhbHVlIjoiSzdSQjhwOWVxNGpNUnF3V01SejlpMDcvelgvSGowZS9IcFg0cjZaeXZnbklXTitoTXVQN0pJb0s4S0R2dTZYUmI2SjhCZ1RQVjd3SDJnUXB2d1ZUelNSYTNKODk3czY3MEJvNGxVaEdqdU09IiwibWFjIjoiODRkOWQ3M2Q0ODdiNWVmODhlNGU2ZWJiNzFlYmNiMzgzMmQzNWM3Mzk5MzlkNmU4NjlmNzJkOTQ5YzdlNjcxNyIsInRhZyI6IiJ9 }}" \
             -H "Content-Type: application/json" \
             -d '{"branch": "main"}'
